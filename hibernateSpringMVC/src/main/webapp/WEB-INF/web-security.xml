@@ -1,0 +1,49 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+         xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.springframework.org/schema/beans
+                             http://www.springframework.org/schema/beans/spring-beans.xsd
+						     http://www.springframework.org/schema/security
+						     http://www.springframework.org/schema/security/spring-security.xsd
+                             http://www.springframework.org/schema/context
+                             http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+     <!--<http auto-config="true">-->
+     <http auto-config="true" use-expressions="true">
+         <intercept-url pattern="/login" access="isAnonymous()"/>
+         <intercept-url pattern="/*" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')" />
+         <!--<intercept-url pattern="/*" access="isAuthenticated()"/>-->
+         <logout logout-success-url="/"/>
+         <form-login
+             login-page="/login"
+             default-target-url="/"
+             authentication-failure-url="/login?error"
+             username-parameter="username"
+             password-parameter="password"
+         />
+     </http>
+     <authentication-manager>
+         <authentication-provider>
+             <!--<user-service>
+                 <user name="user" password="{noop}123" authorities="ROLE_ADMIN" />
+             </user-service>-->
+             <jdbc-user-service data-source-ref="myDataSource"
+                                users-by-username-query=
+                                        "SELECT username,password, enabled from USERS where username=?"
+                                authorities-by-username-query=
+                                        "select username, role from USER_ROLES where username=? "/>
+         </authentication-provider>
+
+     </authentication-manager>
+
+    <beans:bean id="myDataSource"
+              class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+            <beans:property name="driverClassName" value="${jdbc.driverClassName}"/>
+            <beans:property name="url" value="${jdbc.databaseUrl}"/>
+            <beans:property name="username" value="${jdbc.username}"/>
+            <beans:property name="password" value="${jdbc.password}"/>
+    </beans:bean>
+    <context:property-placeholder location="WEB-INF/jdbc.properties"/>
+
+
+</beans:beans>

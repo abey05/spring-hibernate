@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <mapping class="com.hibernate.model.UserEvent"></mapping>
+        <mapping class="com.hibernate.model.PassbookEvent"></mapping>
+        <mapping class="com.hibernate.model.Users"></mapping>
+        <mapping class="com.hibernate.model.UserRoles"></mapping>
+    </session-factory>
+</hibernate-configuration>
+
